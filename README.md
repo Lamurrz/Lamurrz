@@ -2,9 +2,6 @@
 
 Senior cybersecurity professional with 20 years of experience spanning enterprise security architecture, AI/ML security research, detection engineering, and systems security engineering across defense, cloud, and commercial technology sectors.
 
-**Ph.D. Secure and Reliable Computing** · Iowa State University, 2019  
-**CISSP** (active since 2010) · **SABSA** · dual M.S. in Cybersecurity Engineering and Data Analytics  
-**2026 MasterClass Instructor** · COSAC/SABSA Security World Congress
 
 ---
 
@@ -46,7 +43,7 @@ Raw vendor logs
 
 ### [OCSF Transformer](https://github.com/Lamurrz/ocsf-transformer)
 
-Normalizes raw vendor logs from Microsoft Entra ID, Wiz, and Palo Alto PAN-OS into OCSF 1.3.0 — the common schema for modern SIEMs and security data lakes.
+Normalizes raw vendor logs (Microsoft Entra ID, Wiz, and Palo Alto PAN-OS) into OCSF 1.3.0 — the common schema for modern SIEMs and security data lakes.
 
 - Zero dependencies — standard library only, runs anywhere Python 3.10+ is available
 - Deterministic UUIDs enable upsert semantics in Iceberg/Delta without deduplication scans
@@ -98,15 +95,6 @@ NIST CSF 2.0 profile builder and gap evaluator for AI systems, with live integra
 
 ---
 
-## Research & Publications
-
-- Murray, L. (2019). *A Framework Towards Fusing Multisensory Cyber Security Data Utilizing Graph Databases.* Iowa State University. *(Dissertation — the foundation for CyberGraph-AD)*
-- 8 peer-reviewed publications in cybersecurity and systems security
-
-## Speaking & Teaching
-
-- **2026 MasterClass Instructor** — COSAC/SABSA Security World Congress: *"Making Digital Empathy Real: Turning People-Centric Security a Reality"* (with Siân John MBE, EY and Dr. Char Sample)
-- Active mentor — Women in Science and Engineering · Iowa State Industry Design Review Board
 
 ## Core domains
 

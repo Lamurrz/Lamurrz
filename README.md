@@ -95,16 +95,26 @@ NIST CSF 2.0 profile builder and gap evaluator for AI systems, with live integra
 
 ---
 
+## Additional Projects
+
+### [ArchLens](https://github.com/Lamurrz/arch-lens)
+
+DoDAF-inspired architecture modeling tool that transforms free-text personas and use cases into structured architectural views using the Claude API.
+
+- **7 DoDAF views:** OV-2 (Persona Relationships) · OV-5b (Activity Model) · OV-6c (Event Trace) · SV-6 (Data Exchange Matrix) · SV-1 (Systems Interface) · SV-4 (Systems Functionality) · DIV-2 (Logical Data Model)
+- Decomposition methodology: capabilities → functions → actor/input/process/output/destination sequences
+- Domain-agnostic — works for SOC, red team, AI governance, or any operational architecture
+- React + TypeScript frontend with Zustand state persistence · FastAPI backend stub ready
+
+---
+
+*More projects coming — spanning security data engineering, AI governance tooling, and applied ML security research.*
+
+---
 
 ## Core domains
 
 `NIST AI RMF` · `MITRE ATLAS/ATT&CK` · `OWASP LLM Top 10` · `Zero Trust Architecture` · `Adversarial ML` · `SABSA` · `ISO/IEC 42001` · `SIEM/SOAR` · `DevSecOps` · `DSPM` · `AISPM` · `DoDAF` · `Agentic AI Security` · `RMF/FedRAMP`
-
----
-
-## Additional Projects
-
-*More projects coming — spanning security data engineering, AI governance tooling, and applied ML security research.*
 
 ---
 

@@ -118,11 +118,12 @@ NIST CSF 2.0 profile builder and gap evaluator for AI systems, with live integra
 
 ### [Meridian Emulation](https://github.com/Lamurrz/meridian-emulation)
 
-ATT&CK technique emulation and detection validation pipeline integrating Atomic Red Team with Meridian and CyberGraph-AD for closed-loop purple team validation.
+ATT&CK technique emulation and detection validation pipeline with two integration paths: Atomic Red Team for host-based execution and MITRE Caldera for agent-based adversary emulation.
 
 - Pulls control gap techniques from Meridian `/controls/gaps` — prioritizes unmitigated paths
-- Maps to [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) library: 697 ATT&CK techniques, 91 AI-relevant
-- Dry-run mode generates execution plans; live mode executes with cleanup via subprocess
+- **Atomic Red Team path** — 697 ATT&CK techniques, 91 AI-relevant; dry-run and live execution via subprocess
+- **Caldera Scope A** — generates adversary profile YAMLs from Meridian control gaps; verified ability IDs from live Caldera instance
+- **Caldera Scope B** — pushes profiles programmatically via Caldera REST API; profiles appear in Caldera UI ready to run against agents
 - Validates detection coverage by checking CyberGraph-AD findings for matching anomaly types
 - Coverage matrix + gap report: detected / missed / undetected control gaps
 

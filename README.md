@@ -7,7 +7,7 @@ Senior cybersecurity professional with 20 years of experience spanning enterpris
 
 ## AI Security Engineering Portfolio
 
-Five interconnected projects that compose into an end-to-end AI security engineering pipeline:
+Six interconnected projects composing an end-to-end AI security engineering pipeline:
 
 ```
 Raw vendor logs
@@ -15,7 +15,7 @@ Raw vendor logs
       ▼
 ┌─────────────────────┐
 │   OCSF Transformer  │  Normalize → OCSF 1.3.0
-│   Entra · Wiz · PAN │  Okta · Windows Security
+│   Entra · Okta      │  Windows · Wiz · PAN
 └──────────┬──────────┘
            │  OCSF events
            ▼
@@ -26,20 +26,27 @@ Raw vendor logs
 └──────────┬──────────┘
            │  OCSF Detection Findings
            ▼
-┌─────────────────────┐        ┌─────────────────────┐
-│   Meridian KG       │        │   Meridian          │
-│   ATLAS/ATT&CK      │───────►│   Risk Scoring API  │  Assess → threat exposure
-│   4,641 nodes       │        │   7 REST endpoints  │
-│   40,920 edges      │        └──────────┬──────────┘
-└─────────────────────┘                   │  Risk scores · attack paths
-                                          ▼
+┌──────────────────────┐     ┌─────────────────────┐
+│   Meridian KG        │     │   Meridian          │
+│   ATLAS/ATT&CK       │────►│   Risk Scoring API  │  Assess → threat exposure
+│   4,641 nodes        │     │   7 REST endpoints  │
+└──────────────────────┘     └──────────┬──────────┘
+                                        │  Risk scores · attack paths
+                                        ▼
                              ┌─────────────────────┐
                              │   AI CSF Profiler   │  Comply → NIST CSF 2.0
                              │   6 functions · PDF │  AI RMF · ISO 42001
+                             └──────────┬──────────┘
+                                        │  Coverage gaps
+                                        ▼
+                             ┌─────────────────────┐
+                             │  Meridian Emulation │  Validate → detection coverage
+                             │  Atomic Red Team    │  697 ATT&CK techniques
+                             │  + CyberGraph-AD    │  dry-run + live execution
                              └─────────────────────┘
 ```
 
-**The narrative: normalize → detect → assess threat exposure → evaluate compliance.**
+**The narrative: normalize → detect → assess → comply → validate.**
 
 ---
 
@@ -63,12 +70,12 @@ Multisensor behavioral anomaly detection built on a Neo4j property graph fusion 
 - Six anomaly types: brute force, credential stuffing, lateral movement, data exfiltration, privilege escalation, off-hours access
 - v2 ensemble detector: autoencoder + Isolation Forest, 16 behavioral features, trained on normal traffic only
 - OCSF Detection Finding (class_uid 2004) output for SIEM ingestion
-- **Benchmark results** (evaluated on two standard IDS datasets):
+- **Benchmark results** (two standard IDS datasets):
 
 | Dataset | AUC-ROC | F1 | Notes |
 |---------|---------|-----|-------|
 | NSL-KDD | **0.941** | 0.878 | Classic benchmark — competitive with supervised baselines |
-| UNSW-NB15 | **0.771** | — | Modern benchmark — 20% AUC improvement over v1 baseline |
+| UNSW-NB15 | **0.771** | — | Modern benchmark — 20% AUC improvement over v1 |
 
 ---
 
@@ -77,10 +84,9 @@ Multisensor behavioral anomaly detection built on a Neo4j property graph fusion 
 Neo4j property graph encoding the full MITRE ATLAS + MITRE ATT&CK threat framework with an AI asset inventory and live vulnerability intelligence layer.
 
 - 4,641 nodes · 40,920 edges from MITRE ATT&CK Enterprise + MITRE ATLAS STIX 2.1 bundles
-- Three ATLAS tactics with no ATT&CK peer (ML attack staging, ML model access, ML model evasion) modeled as ATLAS-only nodes with `ENABLES` edges to ATT&CK equivalents
-- Validity-scoped `TARGETS` and `MITIGATES` edges prevent over-counting controls that don't apply to a given asset type
-- Asset types: AIModel · InferenceAPI · TrainingData · MLPipeline · ModelRegistry
-- NVD CVE integration links ML framework vulnerabilities (TensorFlow, PyTorch, MLflow, etc.) to asset nodes
+- Three ATLAS tactics with no ATT&CK peer modeled as ATLAS-only nodes with `ENABLES` edges
+- Validity-scoped `TARGETS` and `MITIGATES` edges prevent over-counting controls
+- NVD CVE integration links ML framework vulnerabilities to asset nodes
 
 ---
 
@@ -100,10 +106,21 @@ FastAPI REST query layer over the Meridian Knowledge Graph. Computes quantitativ
 NIST CSF 2.0 profile builder and gap evaluator for AI systems, with live integration into the Meridian Risk API and CyberGraph-AD for evidence-backed subcategory assessment.
 
 - **32 subcategories** across all 6 CSF 2.0 functions: Govern · Identify · Protect · Detect · Respond · Recover
-- AI-specific informative references per subcategory: NIST AI RMF · ISO/IEC 42001 · MITRE ATLAS · OWASP LLM Top 10
-- Meridian integration auto-populates ID.AM-02, ID.RA-01, ID.RA-05, GV.RM-06 from live asset and risk data
-- CyberGraph-AD integration auto-populates DE.CM-01, DE.CM-03, DE.AE-02, DE.AE-06 from anomaly detection telemetry
+- AI-specific informative references: NIST AI RMF · ISO/IEC 42001 · MITRE ATLAS · OWASP LLM Top 10
+- Meridian integration auto-populates subcategory evidence from live asset and risk data
 - Outputs: interactive CLI assessment · structured JSON · formatted PDF gap report
+
+---
+
+### [Meridian Emulation](https://github.com/Lamurrz/meridian-emulation)
+
+ATT&CK technique emulation and detection validation pipeline integrating Atomic Red Team with Meridian and CyberGraph-AD for closed-loop purple team validation.
+
+- Pulls control gap techniques from Meridian `/controls/gaps` — prioritizes unmitigated paths
+- Maps to [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) library: 697 ATT&CK techniques, 91 AI-relevant
+- Dry-run mode generates execution plans; live mode executes with cleanup via subprocess
+- Validates detection coverage by checking CyberGraph-AD findings for matching anomaly types
+- Coverage matrix + gap report: detected / missed / undetected control gaps
 
 ---
 
@@ -113,9 +130,8 @@ NIST CSF 2.0 profile builder and gap evaluator for AI systems, with live integra
 
 DoDAF-inspired architecture modeling tool that transforms free-text personas and use cases into structured architectural views using the Claude API.
 
-- **7 DoDAF views:** OV-2 (Persona Relationships) · OV-5b (Activity Model) · OV-6c (Event Trace) · SV-6 (Data Exchange Matrix) · SV-1 (Systems Interface) · SV-4 (Systems Functionality) · DIV-2 (Logical Data Model)
+- **7 DoDAF views:** OV-2 · OV-5b · OV-6c · SV-6 · SV-1 · SV-4 · DIV-2
 - Decomposition methodology: capabilities → functions → actor/input/process/output/destination sequences
-- Domain-agnostic — works for SOC, red team, AI governance, or any operational architecture
 - React + TypeScript frontend with Zustand state persistence · FastAPI backend stub ready
 
 ---

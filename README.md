@@ -7,7 +7,7 @@ Senior cybersecurity professional with 20 years of experience spanning enterpris
 
 ## AI Security Engineering Portfolio
 
-Four interconnected projects that compose into an end-to-end AI security engineering pipeline:
+Five interconnected projects that compose into an end-to-end AI security engineering pipeline:
 
 ```
 Raw vendor logs
@@ -15,26 +15,28 @@ Raw vendor logs
       ▼
 ┌─────────────────────┐
 │   OCSF Transformer  │  Normalize → OCSF 1.3.0
-│   Entra · Wiz · PAN │
+│   Entra · Wiz · PAN │  Okta · Windows Security
 └──────────┬──────────┘
            │  OCSF events
            ▼
 ┌─────────────────────┐
 │   CyberGraph-AD     │  Detect → behavioral anomalies
 │   Graph fusion · AE │  (dissertation framework)
+│   + Isolation Forest│  NSL-KDD AUC=0.941
 └──────────┬──────────┘
            │  OCSF Detection Findings
            ▼
-┌─────────────────────┐
-│   Meridian +        │  Assess → threat exposure
-│   Risk Scoring API  │  MITRE ATLAS/ATT&CK
-└──────────┬──────────┘
-           │  Risk scores · attack paths
-           ▼
-┌─────────────────────┐
-│   AI CSF Profiler   │  Comply → NIST CSF 2.0
-│   6 functions · PDF │  AI RMF · ISO 42001
-└─────────────────────┘
+┌─────────────────────┐        ┌─────────────────────┐
+│   Meridian KG       │        │   Meridian          │
+│   ATLAS/ATT&CK      │───────►│   Risk Scoring API  │  Assess → threat exposure
+│   4,641 nodes       │        │   7 REST endpoints  │
+│   40,920 edges      │        └──────────┬──────────┘
+└─────────────────────┘                   │  Risk scores · attack paths
+                                          ▼
+                             ┌─────────────────────┐
+                             │   AI CSF Profiler   │  Comply → NIST CSF 2.0
+                             │   6 functions · PDF │  AI RMF · ISO 42001
+                             └─────────────────────┘
 ```
 
 **The narrative: normalize → detect → assess threat exposure → evaluate compliance.**
@@ -43,12 +45,12 @@ Raw vendor logs
 
 ### [OCSF Transformer](https://github.com/Lamurrz/ocsf-transformer)
 
-Normalizes raw vendor logs (Microsoft Entra ID, Wiz, and Palo Alto PAN-OS) into OCSF 1.3.0 — the common schema for modern SIEMs and security data lakes.
+Normalizes raw vendor logs into OCSF 1.3.0 — the common schema for modern SIEMs and security data lakes.
 
+- Five vendors: Microsoft Entra ID · Okta · Windows Security Event Log · Wiz · Palo Alto PAN-OS
+- Four OCSF classes: Authentication (3002) · Process Activity (1007) · Account Change (5001) · Configuration Finding (5019)
 - Zero dependencies — standard library only, runs anywhere Python 3.10+ is available
 - Deterministic UUIDs enable upsert semantics in Iceberg/Delta without deduplication scans
-- Auto-detection of vendor from payload shape
-- Downstream query example: `WHERE class_uid = 3002 AND status_id = 2` finds all auth failures across all vendors
 
 ---
 
@@ -59,27 +61,37 @@ Multisensor behavioral anomaly detection built on a Neo4j property graph fusion 
 > *"A Framework Towards Fusing Multisensory Cyber Security Data Utilizing Graph Databases"*
 
 - Six anomaly types: brute force, credential stuffing, lateral movement, data exfiltration, privilege escalation, off-hours access
-- Autoencoder trained on normal behavioral feature vectors extracted from the fusion graph
+- v2 ensemble detector: autoencoder + Isolation Forest, 16 behavioral features, trained on normal traffic only
 - OCSF Detection Finding (class_uid 2004) output for SIEM ingestion
-- **Benchmark results on UNSW-NB15** (50K samples, 9 attack categories):
+- **Benchmark results** (evaluated on two standard IDS datasets):
 
-| Metric | Value |
-|--------|-------|
-| F1 | 0.436 |
-| Precision | 0.372 |
-| Recall | 0.527 |
-| AUC-ROC | 0.653 |
+| Dataset | AUC-ROC | F1 | Notes |
+|---------|---------|-----|-------|
+| NSL-KDD | **0.941** | 0.878 | Classic benchmark — competitive with supervised baselines |
+| UNSW-NB15 | **0.771** | — | Modern benchmark — 20% AUC improvement over v1 baseline |
 
 ---
 
-### [Meridian + Risk Scoring API](https://github.com/Lamurrz/meridian-api)
+### [Meridian Knowledge Graph](https://github.com/Lamurrz/meridian-atlas-attack-kg)
 
-REST query layer over a Neo4j MITRE ATLAS/ATT&CK knowledge graph. Cross-references threat actor TTPs, AI asset inventory, and vulnerability intelligence to compute quantitative risk scores using a parallel failure mode model.
+Neo4j property graph encoding the full MITRE ATLAS + MITRE ATT&CK threat framework with an AI asset inventory and live vulnerability intelligence layer.
 
-- 4,641 nodes · 40,920 edges from MITRE ATT&CK Enterprise + MITRE ATLAS
+- 4,641 nodes · 40,920 edges from MITRE ATT&CK Enterprise + MITRE ATLAS STIX 2.1 bundles
+- Three ATLAS tactics with no ATT&CK peer (ML attack staging, ML model access, ML model evasion) modeled as ATLAS-only nodes with `ENABLES` edges to ATT&CK equivalents
+- Validity-scoped `TARGETS` and `MITIGATES` edges prevent over-counting controls that don't apply to a given asset type
+- Asset types: AIModel · InferenceAPI · TrainingData · MLPipeline · ModelRegistry
+- NVD CVE integration links ML framework vulnerabilities (TensorFlow, PyTorch, MLflow, etc.) to asset nodes
+
+---
+
+### [Meridian Risk Scoring API](https://github.com/Lamurrz/meridian-api)
+
+FastAPI REST query layer over the Meridian Knowledge Graph. Computes quantitative AI asset risk scores using a parallel failure mode model.
+
 - 7 REST endpoints with auto-generated Swagger UI
 - Risk score formula: R = (1 − ∏(1 − Pᵢ)) × criticality × 10
-- Asset types: AIModel · InferenceAPI · TrainingData · MLPipeline · ModelRegistry
+- Attack path queries: which threat actors target which assets, through which techniques
+- Control gap analysis: techniques targeting assets with no active mitigation
 
 ---
 

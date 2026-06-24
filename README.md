@@ -29,8 +29,12 @@ Raw vendor logs
 ┌──────────────────────┐     ┌─────────────────────┐
 │   Meridian KG        │     │   Meridian          │
 │   ATLAS/ATT&CK       │────►│   Risk Scoring API  │  Assess → threat exposure
-│   4,641 nodes        │     │   7 REST endpoints  │
+│   4,641 nodes        │     │   9 REST endpoints  │
+│   40,920 edges       │     │   + bridge          │
 └──────────────────────┘     └──────────┬──────────┘
+           ▲                            │
+           │   TTP enrichment           │  Adjusted risk scores
+           └────────────────────────────┘
                                         │  Risk scores · attack paths
                                         ▼
                              ┌─────────────────────┐

@@ -74,6 +74,7 @@ Multisensor behavioral anomaly detection built on a Neo4j property graph fusion 
 - Six anomaly types: brute force, credential stuffing, lateral movement, data exfiltration, privilege escalation, off-hours access
 - v2 ensemble detector: autoencoder + Isolation Forest, 16 behavioral features, trained on normal traffic only
 - OCSF Detection Finding (class_uid 2004) output for SIEM ingestion
+- **`pipeline.py`** — wires OCSF Transformer output directly into the fusion graph; processes all 5 vendor sources end-to-end with a single command; forwards Detection Findings to the Meridian Bridge automatically
 - **Benchmark results** (two standard IDS datasets):
 
 | Dataset | AUC-ROC | F1 | Notes |
